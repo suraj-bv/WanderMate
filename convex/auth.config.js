@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: "https://wandermate.surajbv.me",
+      domain: "https://clerk.wandermate.surajbv.me",
       applicationID: "convex",
     },
   ],
