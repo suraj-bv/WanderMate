@@ -56,6 +56,11 @@ function PageLoader() {
 // Initialize Convex client
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL);
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+const clerkDomain = import.meta.env.VITE_CLERK_DOMAIN;
+const clerkSignInUrl = import.meta.env.VITE_CLERK_SIGN_IN_URL;
+const clerkSignUpUrl = import.meta.env.VITE_CLERK_SIGN_UP_URL;
+const isClerkSatellite =
+  String(import.meta.env.VITE_CLERK_IS_SATELLITE).toLowerCase() === "true";
 
 // Redirect authenticated users away from public pages
 function PublicOnly({ children }) {
@@ -103,6 +108,10 @@ function ClerkConvexApp() {
   return (
     <ClerkProvider
       publishableKey={clerkPubKey}
+      domain={clerkDomain}
+      isSatellite={isClerkSatellite}
+      signInUrl={clerkSignInUrl}
+      signUpUrl={clerkSignUpUrl}
       routerPush={(to) => navigate(to)}
       routerReplace={(to) => navigate(to, { replace: true })}
     >

@@ -35,7 +35,7 @@ export default function Landing() {
             </div>
             <span className="logo-text">WanderMate</span>
           </div>
-          <SignInButton mode="modal" forceRedirectUrl="/app/home">
+          <SignInButton mode="redirect" forceRedirectUrl="/app/home">
             <Button variant="ghost" size="sm">
               Sign In
             </Button>
@@ -53,7 +53,7 @@ export default function Landing() {
           </p>
 
           <div className="hero-cta">
-            <SignUpButton mode="modal" forceRedirectUrl="/onboarding">
+            <SignUpButton mode="redirect" forceRedirectUrl="/onboarding">
               <Button variant="primary" size="lg">
                 Get Started Free
               </Button>
@@ -316,12 +316,12 @@ export default function Landing() {
           <p>Join thousands of adventurers already planning trips together</p>
 
           <div className="cta-buttons">
-            <SignUpButton mode="modal" forceRedirectUrl="/onboarding">
+            <SignUpButton mode="redirect" forceRedirectUrl="/onboarding">
               <Button variant="primary" size="lg">
                 Create Free Account
               </Button>
             </SignUpButton>
-            <SignInButton mode="modal" forceRedirectUrl="/app/home">
+            <SignInButton mode="redirect" forceRedirectUrl="/app/home">
               <Button variant="ghost" size="lg">
                 Already have an account?
               </Button>

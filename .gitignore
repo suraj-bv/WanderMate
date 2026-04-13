@@ -33,7 +33,3 @@ dist-ssr
 .env.local
 .env.production
 .env.*.local
-
-# Convex
-.convex
-convex/_generated

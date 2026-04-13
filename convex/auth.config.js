@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: process.env.CLERK_DOMAIN || "https://clerk.wandermate.app",
+      domain: "https://witty-albacore-30.clerk.accounts.dev",
       applicationID: "convex",
     },
   ],

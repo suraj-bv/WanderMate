@@ -4,6 +4,8 @@
 
 Users create profiles with personal preferences (budget style, diet, languages, travel vibe), post upcoming trips, and get matched with compatible travelers through a real-time compatibility scoring algorithm. Matched users can chat in real-time and plan their adventure together.
 
+**Live URL**: https://wandermate.surajbv.me
+
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)
 ![Convex](https://img.shields.io/badge/Convex-Realtime_Backend-FF6F61)
@@ -62,6 +64,10 @@ Create a `.env.local` file in the project root:
 ```env
 VITE_CLERK_PUBLISHABLE_KEY=your_clerk_key_here
 VITE_CONVEX_URL=your_convex_url_here
+VITE_CLERK_DOMAIN=wandermate.surajbv.me
+VITE_CLERK_IS_SATELLITE=true
+VITE_CLERK_SIGN_IN_URL=https://accounts.wandermate.surajbv.me/sign-in
+VITE_CLERK_SIGN_UP_URL=https://accounts.wandermate.surajbv.me/sign-up
 ```
 
 ### 3. Initialize Convex
