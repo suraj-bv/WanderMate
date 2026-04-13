@@ -56,7 +56,12 @@ function PageLoader() {
 // Initialize Convex client
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL);
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-const clerkDomain = import.meta.env.VITE_CLERK_DOMAIN;
+const clerkDomain = (
+  import.meta.env.VITE_CLERK_DOMAIN ||
+  (typeof window !== "undefined" ? window.location.host : "")
+)
+  .replace(/^https?:\/\//, "")
+  .replace(/\/$/, "");
 const clerkSignInUrl = import.meta.env.VITE_CLERK_SIGN_IN_URL;
 const clerkSignUpUrl = import.meta.env.VITE_CLERK_SIGN_UP_URL;
 const isClerkSatellite =
