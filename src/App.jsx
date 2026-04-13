@@ -1,11 +1,5 @@
 import { lazy, Suspense } from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ConvexReactClient, useQuery } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { ClerkProvider, useAuth as useClerkAuth } from "@clerk/clerk-react";
@@ -56,16 +50,6 @@ function PageLoader() {
 // Initialize Convex client
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL);
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-const clerkDomain = (
-  import.meta.env.VITE_CLERK_DOMAIN ||
-  (typeof window !== "undefined" ? window.location.host : "")
-)
-  .replace(/^https?:\/\//, "")
-  .replace(/\/$/, "");
-const clerkSignInUrl = import.meta.env.VITE_CLERK_SIGN_IN_URL;
-const clerkSignUpUrl = import.meta.env.VITE_CLERK_SIGN_UP_URL;
-const isClerkSatellite =
-  String(import.meta.env.VITE_CLERK_IS_SATELLITE).toLowerCase() === "true";
 
 // Redirect authenticated users away from public pages
 function PublicOnly({ children }) {
@@ -108,18 +92,8 @@ function ProtectedRoute({ children }) {
 }
 
 function ClerkConvexApp() {
-  const navigate = useNavigate();
-
   return (
-    <ClerkProvider
-      publishableKey={clerkPubKey}
-      domain={clerkDomain}
-      isSatellite={isClerkSatellite}
-      signInUrl={clerkSignInUrl}
-      signUpUrl={clerkSignUpUrl}
-      routerPush={(to) => navigate(to)}
-      routerReplace={(to) => navigate(to, { replace: true })}
-    >
+    <ClerkProvider publishableKey={clerkPubKey}>
       <ConvexProviderWithClerk client={convex} useAuth={useClerkAuth}>
         <Routes>
           {/* Public Routes */}

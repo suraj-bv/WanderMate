@@ -57,36 +57,98 @@ Users create profiles with personal preferences (budget style, diet, languages, 
 npm install
 ```
 
-### 2. Configure Environment
+### 2. Configure Environment (Local)
 
 Create a `.env.local` file in the project root:
 
 ```env
-VITE_CLERK_PUBLISHABLE_KEY=your_clerk_key_here
-VITE_CONVEX_URL=your_convex_url_here
-VITE_CLERK_DOMAIN=wandermate.surajbv.me
-VITE_CLERK_IS_SATELLITE=true
-VITE_CLERK_SIGN_IN_URL=https://accounts.wandermate.surajbv.me/sign-in
-VITE_CLERK_SIGN_UP_URL=https://accounts.wandermate.surajbv.me/sign-up
+# Clerk (must be from the same Clerk app instance)
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_or_pk_live_xxx
+
+# Convex client URL (from Convex dashboard deployment settings)
+VITE_CONVEX_URL=https://your-deployment.convex.cloud
 ```
 
-### 3. Initialize Convex
+### 3. Configure Convex Auth Provider Domain
 
-Run the Convex dev server (in a separate terminal):
+Set Clerk Frontend API domain in `convex/auth.config.js`:
+
+```js
+export default {
+  providers: [
+    {
+      domain: "https://clerk.wandermate.surajbv.me",
+      applicationID: "convex",
+    },
+  ],
+};
+```
+
+Important:
+
+- Use the Clerk Frontend API domain format for production: `https://clerk.<your-domain>`.
+- Keep this aligned with the Clerk app used by `VITE_CLERK_PUBLISHABLE_KEY`.
+
+### 4. Initialize Convex (Run from Project Root)
+
+Run this from the project root (the folder containing `package.json`):
 
 ```bash
 npx convex dev
 ```
 
-This will prompt you to log in, create a project, generate the `convex/_generated/` files, and watch for changes.
+This generates Convex files and links your local workspace to a deployment.
 
-### 4. Start Development Server
+### 5. Start Development Server
 
 ```bash
 npm run dev
 ```
 
 The app will open at `http://localhost:5173`.
+
+### 6. Production Setup (Vercel + Clerk + Convex)
+
+Set these in Vercel Environment Variables:
+
+```env
+VITE_CLERK_PUBLISHABLE_KEY=pk_live_xxx
+VITE_CONVEX_URL=https://your-prod-deployment.convex.cloud
+CONVEX_DEPLOYMENT=prod:your-prod-deployment-name
+```
+
+Clerk dashboard checklist:
+
+- Domains verified:
+  - Frontend API: `clerk.wandermate.surajbv.me`
+  - Account portal: `accounts.wandermate.surajbv.me`
+- Convex integration is enabled for the same Clerk app as the Vercel publishable key.
+
+Convex deployment steps:
+
+```bash
+npx convex deploy
+```
+
+Then redeploy on Vercel so all environment changes take effect.
+
+### 7. Troubleshooting (Common Issues)
+
+- Error: `No CONVEX_DEPLOYMENT set`
+  - Run Convex commands from project root, not the `convex/` subfolder.
+  - Re-run `npx convex dev` from root to link deployment.
+
+- Error: `ERR_NAME_NOT_RESOLVED` for Clerk script URL
+  - Usually a custom-domain DNS mismatch in Clerk.
+  - Confirm Clerk host resolves and matches your configured custom domains.
+
+- Error: `link_domain must be included`
+  - This happens when satellite configuration is enabled but incomplete.
+  - In this repo's default setup, avoid satellite env vars unless you intentionally need multi-domain auth.
+
+- Error: `POST .../tokens/convex 404`
+  - Convex integration not enabled in Clerk app, or wrong publishable key/app mismatch.
+  - Verify Clerk app and Vercel key belong to the same instance.
 
 ---
 
