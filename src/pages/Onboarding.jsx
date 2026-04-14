@@ -29,6 +29,7 @@ export default function Onboarding() {
   const upsertUser = useMutation(api.users.upsertUser);
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -76,8 +77,12 @@ export default function Onboarding() {
     if (isSubmitting) return;
 
     try {
+      setSubmitError("");
+
       if (!user) {
-        console.error("User not authenticated");
+        const msg = "You are not authenticated. Please sign in again.";
+        console.error(msg);
+        setSubmitError(msg);
         return;
       }
 
@@ -104,7 +109,12 @@ export default function Onboarding() {
       navigate("/app/home?welcome=new");
     } catch (error) {
       console.error("Error saving profile:", error);
-      alert("Failed to save profile. Please try again.");
+      const details =
+        error?.data?.message ||
+        error?.data ||
+        error?.message ||
+        "Unknown error";
+      setSubmitError(`Failed to save profile. ${details}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -484,6 +494,25 @@ export default function Onboarding() {
 
         {/* Navigation */}
         <div className="step-navigation">
+          {submitError && (
+            <div
+              role="alert"
+              style={{
+                width: "100%",
+                marginBottom: "1rem",
+                padding: "0.85rem 1rem",
+                borderRadius: "0.65rem",
+                border: "1px solid rgba(220, 38, 38, 0.35)",
+                background: "rgba(220, 38, 38, 0.08)",
+                color: "#b91c1c",
+                fontSize: "0.9rem",
+                lineHeight: 1.4,
+              }}
+            >
+              {submitError}
+            </div>
+          )}
+
           <Button
             variant="ghost"
             onClick={handlePrev}
