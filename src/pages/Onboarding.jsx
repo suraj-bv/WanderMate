@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "convex/react";
+import { useMutation, useConvexAuth } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Button, Input, Badge } from "../components/ui";
 import { ChevronLeft, ChevronRight, Upload, User } from "lucide-react";
@@ -26,6 +26,7 @@ const STEPS = [
 export default function Onboarding() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isLoading: isConvexAuthLoading, isAuthenticated } = useConvexAuth();
   const upsertUser = useMutation(api.users.upsertUser);
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -83,6 +84,20 @@ export default function Onboarding() {
         const msg = "You are not authenticated. Please sign in again.";
         console.error(msg);
         setSubmitError(msg);
+        return;
+      }
+
+      if (isConvexAuthLoading) {
+        setSubmitError(
+          "Still connecting your login session. Please wait a few seconds and try again.",
+        );
+        return;
+      }
+
+      if (!isAuthenticated) {
+        setSubmitError(
+          "Your login is not yet authenticated with Convex. Check Clerk Convex integration and ensure production issuer/domain values match.",
+        );
         return;
       }
 
@@ -513,6 +528,23 @@ export default function Onboarding() {
             </div>
           )}
 
+          {currentStep === STEPS.length && isConvexAuthLoading && (
+            <div
+              style={{
+                width: "100%",
+                marginBottom: "1rem",
+                padding: "0.75rem 1rem",
+                borderRadius: "0.65rem",
+                border: "1px solid rgba(14, 116, 144, 0.25)",
+                background: "rgba(14, 116, 144, 0.08)",
+                color: "#0e7490",
+                fontSize: "0.9rem",
+              }}
+            >
+              Verifying secure session with Convex...
+            </div>
+          )}
+
           <Button
             variant="ghost"
             onClick={handlePrev}
@@ -528,7 +560,10 @@ export default function Onboarding() {
           <Button
             variant="primary"
             onClick={handleNext}
-            disabled={isSubmitting}
+            disabled={
+              isSubmitting ||
+              (currentStep === STEPS.length && isConvexAuthLoading)
+            }
           >
             {isSubmitting
               ? "Saving..."
