@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { ConvexReactClient, useQuery, useConvexAuth } from "convex/react";
+import { ConvexReactClient, useQuery } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { ClerkProvider, useAuth as useClerkAuth } from "@clerk/clerk-react";
 import { api } from "../convex/_generated/api";
@@ -55,7 +55,7 @@ const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 function PublicOnly({ children }) {
   const { isLoaded, isSignedIn } = useAuth();
 
-  if (!isLoaded) return null;
+  if (!isLoaded) return <PageLoader />;
   if (isSignedIn) return <Navigate to="/app/home" replace />;
 
   return children;
@@ -64,20 +64,17 @@ function PublicOnly({ children }) {
 // Protected Route wrapper
 function ProtectedRoute({ children }) {
   const { isLoaded, isSignedIn, user } = useAuth();
-  const { isLoading: isConvexAuthLoading, isAuthenticated } = useConvexAuth();
 
   const convexUser = useQuery(
     api.users.getCurrentUser,
-    !isConvexAuthLoading && isAuthenticated && user?.id
-      ? { clerkId: user.id }
-      : "skip",
+    isSignedIn && user?.id ? { clerkId: user.id } : "skip",
   );
 
-  if (!isLoaded || isConvexAuthLoading) {
-    return <div style={{ padding: "20px", color: "#666" }}>Loading...</div>;
+  if (!isLoaded) {
+    return <PageLoader />;
   }
 
-  if (!isSignedIn || !isAuthenticated) {
+  if (!isSignedIn) {
     return <Navigate to="/" replace />;
   }
 

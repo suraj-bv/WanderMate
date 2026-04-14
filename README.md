@@ -71,13 +71,14 @@ VITE_CONVEX_URL=https://your-deployment.convex.cloud
 
 ### 3. Configure Convex Auth Provider Domain
 
-Set Clerk Frontend API domain in `convex/auth.config.js`:
+Set the Clerk JWT issuer domain in your Convex environment and keep
+`convex/auth.config.js` pointed at it:
 
 ```js
 export default {
   providers: [
     {
-      domain: "https://clerk.wandermate.surajbv.me",
+      domain: process.env.CLERK_JWT_ISSUER_DOMAIN,
       applicationID: "convex",
     },
   ],
@@ -86,7 +87,8 @@ export default {
 
 Important:
 
-- Use the Clerk Frontend API domain format for production: `https://clerk.<your-domain>`.
+- Use the Clerk Frontend API URL as the issuer domain.
+- In development this usually looks like `https://verb-noun-00.clerk.accounts.dev`.
 - Keep this aligned with the Clerk app used by `VITE_CLERK_PUBLISHABLE_KEY`.
 
 ### 4. Initialize Convex (Run from Project Root)
